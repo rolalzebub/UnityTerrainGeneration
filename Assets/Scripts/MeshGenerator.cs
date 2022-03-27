@@ -31,7 +31,7 @@ public static class MeshGenerator
             {
                 bool isBorderVertex = y == 0 || y == borderedSize - 1 || x == 0 || x == borderedSize - 1;
 
-                if(isBorderVertex)
+                if (isBorderVertex)
                 {
                     vertexIndicesMap[x, y] = borderVertexIndex;
                     borderVertexIndex--;
@@ -50,8 +50,8 @@ public static class MeshGenerator
             {
                 int vertexIndex = vertexIndicesMap[x, y];
                 Vector2 percent = new Vector2((x - meshSimplificationIncrement) / (float)meshSize, (y - meshSimplificationIncrement) / (float)meshSize);
-                float height = _heightCurve.Evaluate(heightMap[x, y]) * heightMultiplier;
-                Vector3 vertexPosition = new Vector3 (topLeftX + percent.x * meshSizeUnsimplified, height, topLeftZ - percent.y * meshSizeUnsimplified);
+                float height = heightCurve.Evaluate(heightMap[x, y]) * heightMultiplier;
+                Vector3 vertexPosition = new Vector3(topLeftX + percent.x * meshSizeUnsimplified, height, topLeftZ - percent.y * meshSizeUnsimplified);
 
                 meshData.AddVertex(vertexPosition, percent, vertexIndex);
 
@@ -68,6 +68,7 @@ public static class MeshGenerator
                 vertexIndex++;
             }
         }
+
         return meshData;
     }
 
