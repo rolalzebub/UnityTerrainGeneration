@@ -12,7 +12,7 @@ public class MapGenerator : MonoBehaviour
 
 	public Noise.NormalizeMode normalizeMode;
 
-	public const int mapChunkSize = 241;
+	public const int mapChunkSize = 239;
 	[Range(0, 6)]
 	public int editorPreviewLOD;
 	public float noiseScale;
@@ -128,7 +128,7 @@ public class MapGenerator : MonoBehaviour
 
 	MapData GenerateMapData(Vector2 centre)
 	{
-		float[,] noiseMap = Noise.GenerateNoiseMap(seed, mapChunkSize, mapChunkSize, noiseScale, octaves, persistance, lacunarity, centre + offset, normalizeMode);
+		float[,] noiseMap = Noise.GenerateNoiseMap(seed, mapChunkSize + 2, mapChunkSize + 2, noiseScale, octaves, persistance, lacunarity, centre + offset, normalizeMode);
 
 		Color[] colourMap = new Color[mapChunkSize * mapChunkSize];
 		for (int y = 0; y < mapChunkSize; y++)
