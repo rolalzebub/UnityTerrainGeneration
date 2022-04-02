@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class TerrainData : ScriptableObject
+public class TerrainData : UpdatableData
 {
 	public float uniformScale = 1f;
 
@@ -15,11 +15,4 @@ public class TerrainData : ScriptableObject
 	public bool useFalloffMap;
 	public AnimationCurve falloffMapCurve;
 
-    private void OnValidate()
-    {
-        if(useFalloffMap)
-        {
-            FalloffGenerator.SetCurve(falloffMapCurve);
-        }
-    }
 }

@@ -164,9 +164,32 @@ public class MapGenerator : MonoBehaviour
 
 	void OnValidate()
 	{
-		FalloffGenerator.SetCurve(terrainData.falloffMapCurve);
-		falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
+		if (terrainData != null)
+		{
+			terrainData.OnValuesUpdated -= OnValuesUpdated;
+			terrainData.OnValuesUpdated += OnValuesUpdated;
+
+			if (terrainData.useFalloffMap)
+			{
+				FalloffGenerator.SetCurve(terrainData.falloffMapCurve);
+				falloffMap = FalloffGenerator.GenerateFalloffMap(mapChunkSize);
+			}
+		}
+
+		if(noiseData != null)
+        {
+			noiseData.OnValuesUpdated -= OnValuesUpdated;
+			noiseData.OnValuesUpdated += OnValuesUpdated;
+        }
 	}
+
+	void OnValuesUpdated()
+    {
+		if(!Application.isPlaying)
+        {
+			DrawMapInEditor();
+        }
+    }
 
 	struct MapThreadInfo<T>
 	{
