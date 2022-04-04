@@ -13,10 +13,88 @@ MonoBehaviour:
   m_Name: DefaultNoise
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  normalizeMode: 0
-  noiseScale: 50
-  octaves: 6
-  persistance: 0.5
-  lacunarity: 2
-  seed: 0
-  offset: {x: 0, y: 0}
+  noiseSettings:
+    normalizeMode: 1
+    scale: 60
+    octaves: 6
+    persistence: 0.35
+    lacunarity: 2
+    seed: 0
+    offset: {x: 0, y: 0}
+  heightMultiplier: 40
+  heightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.27686557
+      value: 0.3339151
+      inSlope: 0.10658739
+      outSlope: 0.10658739
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.053732872
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useFalloffMap: 0
+  falloffMapCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.3487729
+      value: 0.0027140677
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.7566688
+      value: 0.81079817
+      inSlope: 0
+      outSlope: 0.68145984
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.102029294
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

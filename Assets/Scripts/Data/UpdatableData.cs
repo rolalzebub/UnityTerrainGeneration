@@ -7,6 +7,7 @@ public class UpdatableData : ScriptableObject
     public event System.Action OnValuesUpdated;
     public bool autoUpdate;
 
+#if UNITY_EDITOR
     public void NotifyUpdatedValues()
     {
         UnityEditor.EditorApplication.update -= NotifyUpdatedValues;
@@ -24,4 +25,5 @@ public class UpdatableData : ScriptableObject
             UnityEditor.EditorApplication.update += NotifyUpdatedValues;
         }
     }
+#endif
 }
