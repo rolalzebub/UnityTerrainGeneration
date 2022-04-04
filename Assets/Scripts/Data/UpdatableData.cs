@@ -9,7 +9,9 @@ public class UpdatableData : ScriptableObject
 
     public void NotifyUpdatedValues()
     {
-        if(OnValuesUpdated != null)
+        UnityEditor.EditorApplication.update -= NotifyUpdatedValues;
+
+        if (OnValuesUpdated != null)
         {
             OnValuesUpdated();
         }
@@ -19,7 +21,7 @@ public class UpdatableData : ScriptableObject
     {
         if (autoUpdate)
         {
-            NotifyUpdatedValues();
+            UnityEditor.EditorApplication.update += NotifyUpdatedValues;
         }
     }
 }

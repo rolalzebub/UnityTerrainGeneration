@@ -40,7 +40,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   useFlatShading: 0
-  useFalloffMap: 1
+  useFalloffMap: 0
   falloffMapCurve:
     serializedVersion: 2
     m_Curve:

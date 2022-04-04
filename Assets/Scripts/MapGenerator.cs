@@ -23,17 +23,20 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
-
 	[Range(0, 6)]
 	public int editorPreviewLOD;
 	
+	//if this isn't static, falloff maps functionality becomes buggy
+	//maybe find a better way to store it?
 	static float[,] falloffMap;
 
 	public bool autoUpdate;
 	
-
 	public NoiseData noiseData;
 	public TerrainData terrainData;
+	public TextureData textureData;
+
+	public Material terrainMaterial;
 
 	Queue<MapThreadInfo<MapData>> mapDataThreadInfoQueue = new Queue<MapThreadInfo<MapData>>();
 	Queue<MapThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadInfo<MeshData>>();
@@ -141,6 +144,8 @@ public class MapGenerator : MonoBehaviour
 			}
 		}
 
+		textureData.UpdateMeshHeights(terrainMaterial, terrainData.minHeight, terrainData.maxHeight);
+
 		return new MapData(noiseMap);
 	}
 
@@ -157,7 +162,18 @@ public class MapGenerator : MonoBehaviour
 			noiseData.OnValuesUpdated -= OnValuesUpdated;
 			noiseData.OnValuesUpdated += OnValuesUpdated;
         }
+
+		if(textureData!= null)
+        {
+			textureData.OnValuesUpdated -= OnTextureValuesUpdated;
+			textureData.OnValuesUpdated += OnTextureValuesUpdated;
+        }
 	}
+
+	void OnTextureValuesUpdated()
+    {
+		textureData.ApplyToMaterial(terrainMaterial);
+    }
 
 	void OnValuesUpdated()
     {
