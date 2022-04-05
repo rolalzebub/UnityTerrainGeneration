@@ -13,16 +13,6 @@ public class HeightMapSettings : UpdatableData
 	public bool useFalloffMap;
 	public AnimationCurve falloffMapCurve;
 
-	float[,] falloffMapData;
-
-	public float[,] falloffMap
-	{
-		get
-		{
-			return falloffMapData;
-		}
-	}
-
 	public float minHeight
 	{
 		get
@@ -39,16 +29,6 @@ public class HeightMapSettings : UpdatableData
 		}
 	}
 
-	public void SetFalloffData(float[,] data)
-	{
-		falloffMapData = data;
-	}
-
-	public void CalculateFalloffMap(int chunkSize)
-	{
-		falloffMapData = FalloffGenerator.GenerateFalloffMap(chunkSize + 2);
-	}
-
 #if UNITY_EDITOR
 	protected override void OnValidate()
     {
@@ -56,8 +36,6 @@ public class HeightMapSettings : UpdatableData
 
 		noiseSettings.ValidateValues();
 
-		//FalloffGenerator.SetCurve(falloffMapCurve);
-		//falloffMapData = FalloffGenerator.GenerateFalloffMap(mapChunkSize + 2);
 	}
 #endif
 }

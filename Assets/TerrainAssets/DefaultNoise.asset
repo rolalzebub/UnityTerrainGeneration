@@ -21,7 +21,7 @@ MonoBehaviour:
     lacunarity: 2
     seed: 0
     offset: {x: 0, y: 0}
-  heightMultiplier: 40
+  heightMultiplier: 42.6
   heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -55,7 +55,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useFalloffMap: 0
+  useFalloffMap: 1
   falloffMapCurve:
     serializedVersion: 2
     m_Curve:
@@ -78,8 +78,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.7566688
-      value: 0.81079817
+      time: 0.7437904
+      value: 0.9545207
       inSlope: 0
       outSlope: 0.68145984
       tangentMode: 1
