@@ -14,7 +14,7 @@ public class ColourGenerator
         settings = _settings;
         if (texture == null || texture.height != settings.biomeColourSettings.biomes.Length)
         {
-            texture = new Texture2D(texResolution, settings.biomeColourSettings.biomes.Length);
+            texture = new Texture2D(texResolution * 2, settings.biomeColourSettings.biomes.Length, TextureFormat.RGBA32, false);
         }
         biomeNoiseFilter = NoiseFilterFactory.CreateNoiseFilter(settings.biomeColourSettings.noise);
     }
@@ -26,13 +26,13 @@ public class ColourGenerator
 
     public float BiomePercentFromPoint(Vector3 pointOnUnitSphere)
     {
-        float heightPercent = (pointOnUnitSphere.y + 1) / 2f + float.Epsilon;
+        float heightPercent = (pointOnUnitSphere.y + 1) / 2f;
 
         heightPercent += (biomeNoiseFilter.Evaluate(pointOnUnitSphere) - settings.biomeColourSettings.noiseOffset) * settings.biomeColourSettings.noiseStrength;
 
         float biomeIndex = 0;
         int numBiomes = settings.biomeColourSettings.biomes.Length;
-        float blendRange = settings.biomeColourSettings.blendAmount / 2f;
+        float blendRange = settings.biomeColourSettings.blendAmount / 2f + float.Epsilon;
 
         for (int i = 0; i < numBiomes; i++)
         {
@@ -53,11 +53,19 @@ public class ColourGenerator
         int colourIndex = 0;
         foreach (var biome in settings.biomeColourSettings.biomes)
         {
-            for (int i = 0; i < texResolution; i++)
+            for (int i = 0; i < texResolution * 2; i++)
             {
-                Color gradientCol = biome.gradient.Evaluate(i / (texResolution - 1f));
-                Color tintColour = biome.tint;
-                colours[colourIndex] = gradientCol * (1 - biome.tintPercent) + tintColour * biome.tintPercent;
+                Color gradientCol;
+                if (i < texResolution)
+                {
+                    gradientCol = settings.oceanColour.Evaluate(i / (texResolution - 1f));
+                }
+                else
+                {
+                    gradientCol = biome.gradient.Evaluate((i - texResolution) / (texResolution - 1f));
+                }
+                Color tintCol = biome.tint;
+                colours[colourIndex] = gradientCol * (1 - biome.tintPercent) + tintCol * biome.tintPercent;
                 colourIndex++;
             }
         }

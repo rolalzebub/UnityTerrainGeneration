@@ -20,12 +20,12 @@ MonoBehaviour:
       filterType: 0
       simpleNoiseSettings:
         octaves: 5
-        strength: 0.22
-        baseRoughness: 0.9
-        roughness: 2
-        persistence: 0.59
+        strength: 1
+        baseRoughness: 0.3
+        roughness: 2.46
+        persistence: 0.51
         centre: {x: 0, y: 0, z: 0}
-        minValue: 0.91
+        minValue: 1.21
       ridgedNoiseSettings:
         octaves: 0
         strength: 1
@@ -49,10 +49,10 @@ MonoBehaviour:
         minValue: 0
       ridgedNoiseSettings:
         octaves: 2
-        strength: 0.74
-        baseRoughness: 0.12
-        roughness: 1.03
-        persistence: 0.05
+        strength: 1
+        baseRoughness: 0.33
+        roughness: 0.83
+        persistence: 0.98
         centre: {x: 0, y: 0, z: 0}
-        minValue: 0.13
-        weightMultiplier: 0.72
+        minValue: 1.03
+        weightMultiplier: 4.38
