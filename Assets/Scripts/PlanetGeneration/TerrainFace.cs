@@ -25,8 +25,9 @@ public class TerrainFace
     {
         Vector3[] vertices = new Vector3[vertsPerLine * vertsPerLine];
         int[] triangles = new int[(vertsPerLine - 1) * (vertsPerLine - 1) * 6];
-
         int triIndex = 0;
+
+        Vector2[] uv = mesh.uv;
 
         for (int y = 0; y < vertsPerLine; y++)
         {
@@ -55,7 +56,27 @@ public class TerrainFace
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.uv = uv;
         mesh.RecalculateNormals();
     }
 
+    public void UpdateUVs(ColourGenerator generator)
+    {
+        Vector2[] uv = new Vector2[vertsPerLine * vertsPerLine];
+
+        for (int y = 0; y < vertsPerLine; y++)
+        {
+            for (int x = 0; x < vertsPerLine; x++)
+            {
+                int i = x + y * vertsPerLine;
+                Vector2 percent = new Vector2(x, y) / (vertsPerLine - 1);
+                Vector3 pointOnUnitCube = localUp + (percent.x - .5f) * 2 * axisA + (percent.y - .5f) * 2 * axisB;
+                Vector3 pointOnUnitSphere = pointOnUnitCube.normalized;
+
+                uv[i] = new Vector2(generator.BiomePercentFromPoint(pointOnUnitSphere), 0);
+            }
+        }
+
+        mesh.uv = uv;
+    }
 }
