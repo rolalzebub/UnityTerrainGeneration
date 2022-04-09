@@ -19,9 +19,9 @@ MonoBehaviour:
     octaves: 6
     persistence: 0.35
     lacunarity: 2
-    seed: 0
+    seed: 177
     offset: {x: 0, y: 0}
-  heightMultiplier: 42.6
+  heightMultiplier: 60
   heightCurve:
     serializedVersion: 2
     m_Curve:
