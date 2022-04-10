@@ -19,15 +19,15 @@ MonoBehaviour:
         serializedVersion: 2
         key0: {r: 0.60025376, g: 0.42244804, b: 0.28261986, a: 1}
         key1: {r: 0.5660378, g: 0.5081943, b: 0.29049486, a: 1}
-        key2: {r: 0.735849, g: 0.7080889, b: 0.37764326, a: 0}
+        key2: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 0}
         key3: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 0}
         key4: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 14665
-        ctime2: 30705
+        ctime1: 16269
+        ctime2: 42048
         ctime3: 59119
         ctime4: 65077
         ctime5: 0
@@ -42,7 +42,7 @@ MonoBehaviour:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_NumColorKeys: 4
+        m_NumColorKeys: 3
         m_NumAlphaKeys: 2
       tint: {r: 1, g: 1, b: 1, a: 0}
       startHeight: 0
@@ -50,17 +50,17 @@ MonoBehaviour:
     - gradient:
         serializedVersion: 2
         key0: {r: 0.5943396, g: 0.4135514, b: 0.2713777, a: 1}
-        key1: {r: 0.20986167, g: 0.6415094, b: 0.19608401, a: 1}
-        key2: {r: 0.17477654, g: 0.41509432, b: 0.16603772, a: 0}
-        key3: {r: 0.8846564, g: 0.9433962, b: 0.937046, a: 0}
+        key1: {r: 0.5660378, g: 0.17112212, b: 0.119615495, a: 1}
+        key2: {r: 0.33962262, g: 0.07689526, b: 0.03652543, a: 0}
+        key3: {r: 0.3773585, g: 0.22874278, b: 0.20434318, a: 0}
         key4: {r: 0.8846564, g: 0.9433962, b: 0.937046, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
-        ctime0: 917
-        ctime1: 2406
-        ctime2: 19821
-        ctime3: 48693
+        ctime0: 0
+        ctime1: 3552
+        ctime2: 58982
+        ctime3: 65535
         ctime4: 64733
         ctime5: 0
         ctime6: 0
@@ -83,7 +83,7 @@ MonoBehaviour:
         serializedVersion: 2
         key0: {r: 0.60025376, g: 0.42244804, b: 0.28261986, a: 1}
         key1: {r: 0.5660378, g: 0.5081943, b: 0.29049486, a: 1}
-        key2: {r: 0.735849, g: 0.7080889, b: 0.37764326, a: 0}
+        key2: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 0}
         key3: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 0}
         key4: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
@@ -91,7 +91,7 @@ MonoBehaviour:
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
         ctime1: 14665
-        ctime2: 30705
+        ctime2: 31965
         ctime3: 43766
         ctime4: 65077
         ctime5: 0
@@ -106,7 +106,7 @@ MonoBehaviour:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_NumColorKeys: 4
+        m_NumColorKeys: 3
         m_NumAlphaKeys: 2
       tint: {r: 1, g: 1, b: 1, a: 0}
       startHeight: 0.7
@@ -116,13 +116,13 @@ MonoBehaviour:
       simpleNoiseSettings:
         octaves: 4
         strength: 1
-        baseRoughness: 1
-        roughness: 1
-        persistence: 0.63
+        baseRoughness: 0.4
+        roughness: 1.99
+        persistence: 1.21
         centre: {x: 0, y: 0, z: 0}
         minValue: 0
       ridgedNoiseSettings:
-        octaves: 0
+        octaves: 1
         strength: 1
         baseRoughness: 1
         roughness: 2
@@ -130,9 +130,9 @@ MonoBehaviour:
         centre: {x: 0, y: 0, z: 0}
         minValue: 0
         weightMultiplier: 0.8
-    noiseOffset: 2.28
-    noiseStrength: 0.1
-    blendAmount: 0.063
+    noiseOffset: 5.46
+    noiseStrength: 0.02
+    blendAmount: 0.119
   oceanColour:
     serializedVersion: 2
     key0: {r: 0.055322148, g: 0.15355869, b: 0.7924528, a: 1}

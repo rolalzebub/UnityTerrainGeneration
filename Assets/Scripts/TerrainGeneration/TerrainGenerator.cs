@@ -26,9 +26,13 @@ public class TerrainGenerator : MonoBehaviour
 	public MeshSettings meshSettings;
 	public HeightMapSettings heightSettings;
 	public TextureData textureSettings;
+	public ShapeSettings shapeSettings;
 
 	void Start()
 	{
+		var shape = new ShapeGenerator();
+		shape.UpdateSettings(shapeSettings);
+		MeshGenerator.SetShapeGenerator(shape);
 
 		textureSettings.ApplyToMaterial(mapMaterial);
 		textureSettings.UpdateMeshHeights(mapMaterial, heightSettings.minHeight, heightSettings.maxHeight);
