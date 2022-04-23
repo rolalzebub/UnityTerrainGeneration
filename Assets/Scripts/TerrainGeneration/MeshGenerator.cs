@@ -4,16 +4,7 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-
-    static ShapeGenerator shapeGenerator;
-
-    public static void SetShapeGenerator(ShapeGenerator _shapeGen)
-    {
-        
-        shapeGenerator = _shapeGen;
-
-    }
-
+    
     public static MeshData GenerateTerrainMesh(float[,] heightMap, int levelOfDetail, MeshSettings settings)
     {
         
@@ -68,14 +59,9 @@ public static class MeshGenerator
 
                     Vector2 percent = new Vector2(x - 1, y - 1) / (numVertsPerLine - 3);
                     Vector2 vertPosition2D = topLeft + new Vector2(percent.x, -percent.y) * settings.meshWorldSize;
-                    //float height = heightMap[x, y];
-
-                    Vector3 axisA = Vector3.up;
-                    Vector3 axisB = Vector3.Cross(Vector3.up, axisA);
-                    Vector3 pointOnUnitCube = Vector3.up + (percent.x - .5f) * 2 * axisA + (percent.y - .5f) * 2 * axisB;
-                    float height = shapeGenerator.GetScaledElevation(shapeGenerator.CalculateUnscaledElevation(pointOnUnitCube));
-
-                    if (isEdgeCxnVertex)
+                    float height = heightMap[x, y];
+                    
+                    if(isEdgeCxnVertex)
                     {
                         bool isVertical = (x == 2) || (x == numVertsPerLine - 3);
                         int dstToMainVertA = (isVertical? y - 2 : x - 2) % skipIncrement;

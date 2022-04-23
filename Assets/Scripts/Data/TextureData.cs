@@ -38,14 +38,6 @@ public class TextureData : UpdatableData
         material.SetFloat("minHeight", minHeight);
         material.SetFloat("maxHeight", maxHeight);
     }
-    public void UpdateMeshHeights(Material material, MinMax minMax)
-    {
-        savedMinHeight = minMax.Min;
-        savedMaxHeight = minMax.Max;
-
-        material.SetFloat("minHeight", minMax.Min);
-        material.SetFloat("maxHeight", minMax.Max);
-    }
 
     Texture2DArray GenerateTextureArray(Texture2D[] textures)
     {
