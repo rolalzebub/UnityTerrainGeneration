@@ -11,7 +11,7 @@ public static class MeshGenerator
         shapeGen = _shapeGen;
     }
     
-    public static MeshData GenerateTerrainMesh(int levelOfDetail, MeshSettings settings)
+    public static MeshData GenerateTerrainMesh(int levelOfDetail, MeshSettings settings, Vector2 chunkCoord)
     {
         
         int skipIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
@@ -65,7 +65,7 @@ public static class MeshGenerator
 
                     Vector2 percent = new Vector2(x - 1, y - 1) / (numVertsPerLine - 3);
                     Vector2 vertPosition2D = topLeft + new Vector2(percent.x, -percent.y) * settings.meshWorldSize;
-                    float height = shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x, 0, vertPosition2D.y));
+                    float height = shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x + (chunkCoord.x * settings.meshWorldSize), 0, vertPosition2D.y + (chunkCoord.y * settings.meshWorldSize)));
                     
                     if(isEdgeCxnVertex)
                     {

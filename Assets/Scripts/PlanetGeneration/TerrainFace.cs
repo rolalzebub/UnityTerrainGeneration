@@ -36,10 +36,9 @@ public class TerrainFace
                 int i = x + y * vertsPerLine;
                 Vector2 percent = new Vector2(x, y) / (vertsPerLine - 1);
                 Vector3 pointOnUnitCube = localUp + (percent.x - .5f) * 2 * axisA + (percent.y - .5f) * 2 * axisB;
-                Vector3 pointOnUnitSphere = pointOnUnitCube.normalized;
-                float unscaledElevation = shapeGenerator.CalculateUnscaledElevation(pointOnUnitSphere);
+                float unscaledElevation = shapeGenerator.CalculateUnscaledElevation(pointOnUnitCube);
 
-                vertices[i] = pointOnUnitSphere * shapeGenerator.GetScaledElevation(unscaledElevation);
+                vertices[i] = pointOnUnitCube * shapeGenerator.GetScaledElevation(unscaledElevation);
                 uv[i].y = unscaledElevation;
 
                 if(x != vertsPerLine - 1 && y != vertsPerLine - 1)

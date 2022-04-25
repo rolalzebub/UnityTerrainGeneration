@@ -64,7 +64,7 @@ public class MapPreview : MonoBehaviour
         }
         else if (drawMode == DrawMode.Mesh)
         {
-            DrawMesh(MeshGenerator.GenerateTerrainMesh(editorPreviewLOD, meshSettings));
+            DrawMesh(MeshGenerator.GenerateTerrainMesh(editorPreviewLOD, meshSettings, Vector2.zero));
         }
         else if (drawMode == DrawMode.FalloffMap)
         {
