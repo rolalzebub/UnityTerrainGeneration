@@ -66,8 +66,21 @@ public static class MeshGenerator
                     Vector2 percent = new Vector2(x - 1, y - 1) / (numVertsPerLine - 3);
                     Vector2 vertPosition2D = topLeft + new Vector2(percent.x, -percent.y) * settings.meshWorldSize;
                     float height = shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x + (chunkCoord.x * settings.meshWorldSize), 0, vertPosition2D.y + (chunkCoord.y * settings.meshWorldSize)));
-                    
-                    meshData.AddVertex(new Vector3(vertPosition2D.x, height, vertPosition2D.y), percent, vertexIndex);
+
+                    if(isEdgeCxnVertex)
+                    { 
+                        bool isVertical = (x == 2) || (x == numVertsPerLine - 3);
+                        int dstToMainVertA = (isVertical ? y - 2 : x - 2) % skipIncrement;
+                        int dstToMainVertB = skipIncrement - dstToMainVertA;
+                        float heightMainVertA = shapeGen.CalculateUnscaledElevation(new Vector3(isVertical ? x : x - dstToMainVertA, 0, isVertical ? y - dstToMainVertA : y));
+                        float heightMainVertB = shapeGen.CalculateUnscaledElevation(new Vector3(isVertical ? x : x + dstToMainVertB, 0, isVertical ? y + dstToMainVertB : y));
+                        float dstPercentAToB = dstToMainVertA / (float)skipIncrement;
+
+                        height -= Mathf.LerpAngle(heightMainVertA, heightMainVertB, dstPercentAToB) / numVertsPerLine;
+                    }
+
+
+                meshData.AddVertex(new Vector3(vertPosition2D.x, height, vertPosition2D.y), percent, vertexIndex);
 
                     bool createTriangle = x < numVertsPerLine - 1 && y < numVertsPerLine - 1 && (!isEdgeCxnVertex || (x != 2 && y != 2));
 
