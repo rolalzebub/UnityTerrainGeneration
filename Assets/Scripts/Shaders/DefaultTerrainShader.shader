@@ -71,7 +71,6 @@ Shader "Custom/DefaultTerrainShader"
                 o.Albedo = o.Albedo * (1 - drawStrength) + baseColour + textureColour * drawStrength;
             }
 
-            //o.Albedo = xProjection + yProjection + zProjection;
         }
         ENDCG
     }

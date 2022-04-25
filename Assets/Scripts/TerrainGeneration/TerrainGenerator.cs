@@ -27,11 +27,24 @@ public class TerrainGenerator : MonoBehaviour
 	public HeightMapSettings heightSettings;
 	public TextureData textureSettings;
 
+	public ShapeSettings shapeSettings;
+	ShapeGenerator shapeGen = new ShapeGenerator();
+
+    [HideInInspector]
+	public bool meshSettingsFoldout;
+    [HideInInspector]
+	public bool heightSettingsFoldout;
+    [HideInInspector]
+	public bool textureSettingsFoldout;
+	[HideInInspector]
+	public bool shapeSettingsFoldout;
+
 	void Start()
 	{
-
 		textureSettings.ApplyToMaterial(mapMaterial);
 		textureSettings.UpdateMeshHeights(mapMaterial, heightSettings.minHeight, heightSettings.maxHeight);
+
+		MeshGenerator.UpdateShapeGenerator(shapeGen);
 
 		float maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
 		meshWorldSize = meshSettings.meshWorldSize;
@@ -107,6 +120,12 @@ public class TerrainGenerator : MonoBehaviour
 			visibleTerrainChunks.Remove(chunk);
         }
     }
+
+    private void OnValidate()
+    {
+		shapeGen.UpdateSettings(shapeSettings);
+		MeshGenerator.UpdateShapeGenerator(shapeGen);
+	}
 }
 
 [System.Serializable]

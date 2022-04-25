@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu()]
 public class MeshSettings : UpdatableData
 {
     public const int numSupportedLODs = 5;

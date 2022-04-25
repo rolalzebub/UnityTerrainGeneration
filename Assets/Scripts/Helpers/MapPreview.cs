@@ -19,8 +19,20 @@ public class MapPreview : MonoBehaviour
     public HeightMapSettings heightMapSettings;
     public MeshSettings meshSettings;
     public TextureData textureData;
+    public ShapeSettings shapeSettings;
+
+    ShapeGenerator shapeGen = new ShapeGenerator();
 
     public Material terrainMaterial;
+
+    [HideInInspector]
+    public bool heightSettingsFoldout;
+    [HideInInspector]
+    public bool meshSettingsFoldout;
+    [HideInInspector]
+    public bool textureDataFoldout;
+    [HideInInspector]
+    public bool shapeSettingsFoldout;
 
     public void DrawTexture(Texture2D texture)
     {
@@ -41,18 +53,18 @@ public class MapPreview : MonoBehaviour
 
     public void DrawMapInEditor()
     {
-
+        shapeGen.UpdateSettings(shapeSettings);
         HeightMap heightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
         textureData.ApplyToMaterial(terrainMaterial);
         textureData.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
 
         if (drawMode == DrawMode.NoiseMap)
         {
-            DrawTexture(TextureGenerator.TextureFromHeightMap(heightMap));
+            DrawTexture(TextureGenerator.TextureFromShapeGenerator(new Vector2Int(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine), shapeGen));
         }
         else if (drawMode == DrawMode.Mesh)
         {
-            DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap.values, editorPreviewLOD, meshSettings));
+            DrawMesh(MeshGenerator.GenerateTerrainMesh(editorPreviewLOD, meshSettings));
         }
         else if (drawMode == DrawMode.FalloffMap)
         {
@@ -80,6 +92,10 @@ public class MapPreview : MonoBehaviour
             textureData.OnValuesUpdated -= OnTextureValuesUpdated;
             textureData.OnValuesUpdated += OnTextureValuesUpdated;
         }
+        if (shapeSettings != null)
+        {
+            shapeGen.UpdateSettings(shapeSettings);
+        }
     }
 
     void OnTextureValuesUpdated()
@@ -87,7 +103,7 @@ public class MapPreview : MonoBehaviour
         textureData.ApplyToMaterial(terrainMaterial);
     }
 
-    void OnValuesUpdated()
+    public void OnValuesUpdated()
     {
         if (!Application.isPlaying)
         {

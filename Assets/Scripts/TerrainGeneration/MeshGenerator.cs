@@ -4,8 +4,14 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
+    static ShapeGenerator shapeGen = null;
+
+    public static void UpdateShapeGenerator(ShapeGenerator _shapeGen)
+    {
+        shapeGen = _shapeGen;
+    }
     
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, int levelOfDetail, MeshSettings settings)
+    public static MeshData GenerateTerrainMesh(int levelOfDetail, MeshSettings settings)
     {
         
         int skipIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
@@ -59,7 +65,7 @@ public static class MeshGenerator
 
                     Vector2 percent = new Vector2(x - 1, y - 1) / (numVertsPerLine - 3);
                     Vector2 vertPosition2D = topLeft + new Vector2(percent.x, -percent.y) * settings.meshWorldSize;
-                    float height = heightMap[x, y];
+                    float height = shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x, 0, vertPosition2D.y));
                     
                     if(isEdgeCxnVertex)
                     {
@@ -67,8 +73,8 @@ public static class MeshGenerator
                         int dstToMainVertA = (isVertical? y - 2 : x - 2) % skipIncrement;
                         int dstToMainVertB = skipIncrement - dstToMainVertA;
 
-                        float heightMainVertA = heightMap[isVertical ? x : x - dstToMainVertA, isVertical ? y - dstToMainVertA : y];
-                        float heightMainVertB = heightMap[isVertical ? x : x + dstToMainVertB, isVertical ? y + dstToMainVertB : y];
+                        float heightMainVertA = shapeGen.CalculateUnscaledElevation(new Vector3(isVertical ? x : x - dstToMainVertA, 0, isVertical ? y - dstToMainVertA : y));
+                        float heightMainVertB = shapeGen.CalculateUnscaledElevation(new Vector3(isVertical ? x : x + dstToMainVertB, 0,  isVertical ? y + dstToMainVertB : y));
 
                         float dstPercentAToB = dstToMainVertA / (float) skipIncrement;
 

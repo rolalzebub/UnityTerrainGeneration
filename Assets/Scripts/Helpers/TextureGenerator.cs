@@ -34,4 +34,21 @@ public static class TextureGenerator
 
         return TextureFromColourMap(colourMap, width, height);
     }
+
+    public static Texture2D TextureFromShapeGenerator(Vector2Int size, ShapeGenerator shapeGen)
+    {
+        Texture2D texture = new Texture2D(size.x, size.y);
+
+        Color[] colourMap = new Color[size.x * size.y];
+
+        for (int y = 0; y < size.y; y++)
+        {
+            for (int x = 0; x < size.x; x++)
+            {
+                colourMap[(y * size.x) + x] = Color.Lerp(Color.black, Color.white, Mathf.InverseLerp(shapeGen.elevationMinMax.Min, shapeGen.elevationMinMax.Max, shapeGen.CalculateUnscaledElevation(new Vector3(x, 0, y))));
+            }
+        }
+
+        return TextureFromColourMap(colourMap, size.x, size.y);
+    }
 }

@@ -4,21 +4,60 @@ using UnityEngine;
 [CustomEditor(typeof(MapPreview))]
 public class MapPreviewEditor : Editor
 {
+    MapPreview preview;
+    Editor meshSettingsEditor;
+    Editor heightSettingsEditor;
+    Editor textureDataEditor;
+    Editor shapeSettingsEditor;
+
+    private void OnEnable()
+    {
+        preview = (MapPreview)target;
+    }
+
     public override void OnInspectorGUI()
     {
-        MapPreview mapGen = (MapPreview)target;
-
         if(DrawDefaultInspector())
         {
-            if (mapGen.autoUpdate)
+            if (preview.autoUpdate)
             {
-                mapGen.DrawMapInEditor();
+                preview.OnValuesUpdated();
             }
         }
 
         if(GUILayout.Button("Generate"))
         {
-            mapGen.DrawMapInEditor();
+            preview.DrawMapInEditor();
+        }
+
+        DrawSettingsEditor(preview.heightMapSettings, preview.OnValuesUpdated, ref preview.heightSettingsFoldout, ref heightSettingsEditor);
+        DrawSettingsEditor(preview.meshSettings, preview.OnValuesUpdated, ref preview.meshSettingsFoldout, ref meshSettingsEditor);
+        DrawSettingsEditor(preview.textureData, preview.OnValuesUpdated, ref preview.textureDataFoldout, ref textureDataEditor);
+        DrawSettingsEditor(preview.shapeSettings, preview.OnValuesUpdated, ref preview.shapeSettingsFoldout, ref shapeSettingsEditor);
+    }
+
+    void DrawSettingsEditor(Object settings, System.Action updateCallback, ref bool foldOut, ref Editor editor)
+    {
+        if (settings == null)
+            return;
+
+        foldOut = EditorGUILayout.InspectorTitlebar(foldOut, settings);
+
+        using (var check = new EditorGUI.ChangeCheckScope())
+        {
+            if (foldOut)
+            {
+                CreateCachedEditor(settings, null, ref editor);
+                editor.OnInspectorGUI();
+
+                if (check.changed)
+                {
+                    if (updateCallback != null)
+                    {
+                        updateCallback();
+                    }
+                }
+            }
         }
     }
 }
