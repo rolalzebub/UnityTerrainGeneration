@@ -20,7 +20,7 @@ MonoBehaviour:
       filterType: 0
       simpleNoiseSettings:
         octaves: 4
-        strength: 11.08
+        strength: 27.15
         baseRoughness: 0.02
         roughness: 0.21
         persistence: 0.5
@@ -35,3 +35,24 @@ MonoBehaviour:
         centre: {x: 0, y: 0, z: 0}
         minValue: 0
         weightMultiplier: 0
+  - enabled: 1
+    useFirstLayerAsMask: 1
+    noiseSettings:
+      filterType: 1
+      simpleNoiseSettings:
+        octaves: 4
+        strength: 1.49
+        baseRoughness: 0.02
+        roughness: 0.21
+        persistence: 0.5
+        centre: {x: 0, y: 0, z: 0}
+        minValue: 0
+      ridgedNoiseSettings:
+        octaves: 3
+        strength: 0.2
+        baseRoughness: 0.02
+        roughness: 0.12
+        persistence: 1.84
+        centre: {x: 0, y: 0, z: 0}
+        minValue: 4.28
+        weightMultiplier: 2.23

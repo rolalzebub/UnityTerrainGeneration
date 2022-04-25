@@ -35,7 +35,7 @@ public static class TextureGenerator
         return TextureFromColourMap(colourMap, width, height);
     }
 
-    public static Texture2D TextureFromShapeGenerator(Vector2Int size, ShapeGenerator shapeGen)
+    public static Texture2D TextureFromShapeGenerator(Vector2Int size, ref ShapeGenerator shapeGen)
     {
         Texture2D texture = new Texture2D(size.x, size.y);
 

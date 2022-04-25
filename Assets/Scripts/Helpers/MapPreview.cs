@@ -54,13 +54,13 @@ public class MapPreview : MonoBehaviour
     public void DrawMapInEditor()
     {
         shapeGen.UpdateSettings(shapeSettings);
-        HeightMap heightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
+        MeshGenerator.UpdateShapeGenerator(shapeGen);
         textureData.ApplyToMaterial(terrainMaterial);
         textureData.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
 
         if (drawMode == DrawMode.NoiseMap)
         {
-            DrawTexture(TextureGenerator.TextureFromShapeGenerator(new Vector2Int(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine), shapeGen));
+            DrawTexture(TextureGenerator.TextureFromShapeGenerator(new Vector2Int(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine), ref shapeGen));
         }
         else if (drawMode == DrawMode.Mesh)
         {
