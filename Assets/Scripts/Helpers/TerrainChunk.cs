@@ -7,7 +7,7 @@ public class TerrainChunk
 	public event System.Action<TerrainChunk, bool> OnVisibilityChanged;
 
 	const float colliderGenerationDstThreshold = 5f;
-	
+
 	public Vector2 coord;
 
 	GameObject meshObject;
@@ -34,11 +34,13 @@ public class TerrainChunk
 	HeightMapSettings heightSettings;
 	MeshSettings meshSettings;
 
+	bool hasPlacedTrees = false;
+
 	Vector2 viewerPosition
-    {
+	{
 		get
 		{ return new Vector2(viewer.position.x, viewer.position.z); }
-    }
+	}
 	public TerrainChunk(Vector2 _coord, LODInfo[] detailLevels, int _colliderLODIndex,
 		Transform parent, Material material, HeightMapSettings heightMapSettings, MeshSettings _meshSettings, Transform _viewer)
 	{
@@ -88,7 +90,7 @@ public class TerrainChunk
 	}
 
 	public void Load()
-    {
+	{
 		ThreadedDataRequestor.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightSettings, sampleCentre),
 			OnHeightMapReceived);
 	}
@@ -136,10 +138,11 @@ public class TerrainChunk
 			{
 				SetVisible(visible);
 				if (OnVisibilityChanged != null)
-                {
+				{
 					OnVisibilityChanged(this, visible);
-                }
+				}
 			}
+
 		}
 	}
 
@@ -181,36 +184,62 @@ public class TerrainChunk
 		return meshObject.activeSelf;
 	}
 
-}
-
-class LODMesh
-{
-
-	public Mesh mesh;
-	public bool hasRequestedMesh;
-	public bool hasMesh;
-	Vector2 chunkCoord;
-	int lod;
-	public event System.Action updateCallback;
-
-	public LODMesh(int lod, Vector2 _chunkCoord)
+	public void FindSpaceForTrees()
 	{
-		this.lod = lod;
-		chunkCoord = _chunkCoord;
+		//find space for trees
+		var points = PDSampling.GeneratePoints(1.5f, new Vector2(meshFilter.sharedMesh.bounds.size.x, meshFilter.sharedMesh.bounds.size.z));
+
+		foreach (var point in points)
+		{
+			//raycast upwards from point till you hit a triangle
+			Ray pointCheck = new Ray(new Vector3(meshFilter.sharedMesh.bounds.min.x + point.x, 100, meshFilter.sharedMesh.bounds.min.z + point.y), Vector3.down);
+			Debug.DrawLine(pointCheck.origin, pointCheck.origin + (pointCheck.direction * 120f));
+			RaycastHit checkInfo;
+			bool checkResult = Physics.Raycast(pointCheck, out checkInfo, 120f);
+
+			if (checkResult)
+			{
+				var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+				go.transform.position = checkInfo.point;
+				Vector3 surfaceNormal = checkInfo.normal;
+				if (Mathf.Abs(Vector3.Angle(surfaceNormal, Vector3.up)) < 25)
+				{
+					Debug.Log("This spot works");
+				}
+			}
+
+		}
+
 	}
 
-	void OnMeshDataReceived(object meshData)
+	class LODMesh
 	{
-		mesh = ((MeshData)meshData).CreateMesh();
-		hasMesh = true;
 
-		updateCallback();
+		public Mesh mesh;
+		public bool hasRequestedMesh;
+		public bool hasMesh;
+		Vector2 chunkCoord;
+		int lod;
+		public event System.Action updateCallback;
+
+		public LODMesh(int lod, Vector2 _chunkCoord)
+		{
+			this.lod = lod;
+			chunkCoord = _chunkCoord;
+		}
+
+		void OnMeshDataReceived(object meshData)
+		{
+			mesh = ((MeshData)meshData).CreateMesh();
+			hasMesh = true;
+
+			updateCallback();
+		}
+
+		public void RequestMesh(HeightMap heightMap, MeshSettings settings)
+		{
+			hasRequestedMesh = true;
+			ThreadedDataRequestor.RequestData(() => MeshGenerator.GenerateTerrainMesh(lod, settings, chunkCoord), OnMeshDataReceived);
+		}
 	}
-
-	public void RequestMesh(HeightMap heightMap, MeshSettings settings)
-	{
-		hasRequestedMesh = true;
-		ThreadedDataRequestor.RequestData(() => MeshGenerator.GenerateTerrainMesh(lod, settings, chunkCoord), OnMeshDataReceived);
-	}
-
 }

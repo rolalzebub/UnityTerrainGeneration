@@ -65,7 +65,10 @@ public static class MeshGenerator
 
                     Vector2 percent = new Vector2(x - 1, y - 1) / (numVertsPerLine - 3);
                     Vector2 vertPosition2D = topLeft + new Vector2(percent.x, -percent.y) * settings.meshWorldSize;
-                    float height = shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x + (chunkCoord.x * settings.meshWorldSize), 0, vertPosition2D.y + (chunkCoord.y * settings.meshWorldSize)));
+
+                    Vector2 worldOffset = chunkCoord * settings.meshWorldSize;
+
+                    float height = shapeGen.GetScaledElevation(shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x + worldOffset.x, 0, vertPosition2D.y + worldOffset.y)));
 
 
                     meshData.AddVertex(new Vector3(vertPosition2D.x, height, vertPosition2D.y), percent, vertexIndex);
@@ -260,7 +263,6 @@ public class MeshData
         {
             mesh.normals = bakedNormals;
         }
-
         return mesh;
     }
 

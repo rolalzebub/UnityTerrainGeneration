@@ -20,6 +20,11 @@ public class ShapeGenerator
         elevationMinMax = new MinMax();
     }
 
+    public ShapeSettings GetCurrentSettings()
+    {
+        return settings;
+    }
+
     public float CalculateUnscaledElevation(Vector3 pointOnUnitSphere)
     {
         float firstLayerValue = 0;
@@ -53,7 +58,7 @@ public class ShapeGenerator
     public float GetScaledElevation(float unscaledElevation)
     {
         float elevation = Mathf.Max(0, unscaledElevation);
-        elevation = settings.planetRadius * (1 + elevation);
+        elevation = (1 + elevation);
         return elevation;
     }
 }
