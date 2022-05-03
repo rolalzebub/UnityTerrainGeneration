@@ -17,8 +17,8 @@ public class MapPreview : MonoBehaviour
 
     public bool autoUpdate;
 
-    public HeightMapSettings heightMapSettings;
     public MeshSettings meshSettings;
+    public HeightMapSettings heightSettings;
     public TextureData textureData;
     public ShapeSettings shapeSettings;
 
@@ -27,14 +27,17 @@ public class MapPreview : MonoBehaviour
     public Material terrainMaterial;
 
     [HideInInspector]
-    public bool heightSettingsFoldout;
-    [HideInInspector]
     public bool meshSettingsFoldout;
     [HideInInspector]
     public bool textureDataFoldout;
     [HideInInspector]
     public bool shapeSettingsFoldout;
 
+    public GameObject[] grassyObjectsToPlace;
+    public float grassyObjectPlacementRadius = 3f;
+
+    List<GameObject> placedTrees = new List<GameObject>();
+    public FoliageSettings foliageSettings;
     public void DrawTexture(Texture2D texture)
     {
         textureRenderer.sharedMaterial.mainTexture = texture;
@@ -54,39 +57,56 @@ public class MapPreview : MonoBehaviour
         FindSpaceForTrees();
     }
 
+    void ClearOldTrees()
+    {
+        if(placedTrees.Count > 0)
+        {
+            foreach(var tree in placedTrees)
+            {
+                DestroyImmediate(tree);
+            }
+            placedTrees.Clear();
+        }
+    }
+
     private void FindSpaceForTrees()
     {
-        //find space for trees
-        var points = PDSampling.GeneratePoints(1.5f, new Vector2(meshFilter.sharedMesh.bounds.size.x, meshFilter.sharedMesh.bounds.size.z));
+        ClearOldTrees();
 
+        //find space for trees
+        var points = PDSampling.GeneratePoints(grassyObjectPlacementRadius, new Vector2(meshFilter.sharedMesh.bounds.size.x, meshFilter.sharedMesh.bounds.size.z));
         foreach (var point in points)
         {
             //raycast upwards from point till you hit a triangle
             Ray pointCheck = new Ray(new Vector3(meshFilter.sharedMesh.bounds.min.x + point.x, 100, meshFilter.sharedMesh.bounds.min.z + point.y), Vector3.down);
-            Debug.DrawLine(pointCheck.origin, pointCheck.origin + (pointCheck.direction * 120f));
             RaycastHit checkInfo;
             bool checkResult = Physics.Raycast(pointCheck, out checkInfo, 120f);
 
             if (checkResult)
             {
-                var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                go.transform.position = checkInfo.point;
-                Vector3 surfaceNormal = checkInfo.normal;
-                if (Mathf.Abs(Vector3.Angle(surfaceNormal, Vector3.up)) < 25)
+                if (checkInfo.collider.attachedRigidbody == null)
                 {
-                    Debug.Log("This spot works");
+                    float pointElevation = shapeGen.CalculateUnscaledElevation(new Vector3(checkInfo.point.x, checkInfo.point.y, checkInfo.point.z));
+
+                    var toSpawn = FoliageFactory.GetFoliageForPoint(new FoliagePointProfile() { pointElevation = pointElevation, elevationMinMax = shapeGen.elevationMinMax });
+                    if (toSpawn != null)
+                    {
+                        var tree = Instantiate(toSpawn, checkInfo.point, Quaternion.identity, meshFilter.gameObject.transform);
+                        tree.transform.up = checkInfo.normal;
+                        placedTrees.Add(tree);
+                    }
                 }
             }
-
         }
     }
 
     public void DrawMapInEditor()
     {
         shapeGen.UpdateSettings(shapeSettings);
+        FoliageFactory.SetFoliageSettings(foliageSettings);
         MeshGenerator.UpdateShapeGenerator(shapeGen);
         textureData.ApplyToMaterial(terrainMaterial);
-        textureData.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
+        textureData.UpdateMeshHeights(terrainMaterial, heightSettings.minHeight, heightSettings.maxHeight);
 
         if (drawMode == DrawMode.NoiseMap)
         {
@@ -111,10 +131,10 @@ public class MapPreview : MonoBehaviour
             meshSettings.OnValuesUpdated += OnValuesUpdated;
         }
 
-        if (heightMapSettings != null)
+        if (heightSettings != null)
         {
-            heightMapSettings.OnValuesUpdated -= OnValuesUpdated;
-            heightMapSettings.OnValuesUpdated += OnValuesUpdated;
+            heightSettings.OnValuesUpdated -= OnValuesUpdated;
+            heightSettings.OnValuesUpdated += OnValuesUpdated;
         }
 
         if (textureData != null)

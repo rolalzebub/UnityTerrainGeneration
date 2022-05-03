@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a16e6ede32eb8a842b7563ae97b60bae, type: 3}
+  m_Name: DefaultFoliage
+  m_EditorClassIdentifier: 
+  foliageObjects:
+  - {fileID: 100004, guid: d027af1092f6b434090f040565e7e656, type: 3}
+  - {fileID: 100016, guid: 469edab27ab6d004d84af2c4a851bd7f, type: 3}
+  - {fileID: 100000, guid: c91c1eb85782d5748ace27eb4d7415bb, type: 3}
+  elevationLevelObjectIndices: 000000000100000002000000
+  elevationLevels:
+  - 12
+  - 15
+  - 18
+  objectSeparationRadius: 1.7

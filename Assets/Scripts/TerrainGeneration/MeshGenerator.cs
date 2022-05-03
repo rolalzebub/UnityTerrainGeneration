@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    static ShapeGenerator shapeGen = null;
+    public static ShapeGenerator shapeGen = null;
 
     public static void UpdateShapeGenerator(ShapeGenerator _shapeGen)
     {
@@ -60,7 +60,6 @@ public static class MeshGenerator
 
                 if (!isSkippedVertex)
                 {
-
                     int vertexIndex = vertexIndicesMap[x, y];
 
                     Vector2 percent = new Vector2(x - 1, y - 1) / (numVertsPerLine - 3);
@@ -68,8 +67,7 @@ public static class MeshGenerator
 
                     Vector2 worldOffset = chunkCoord * settings.meshWorldSize;
 
-                    float height = shapeGen.GetScaledElevation(shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x + worldOffset.x, 0, vertPosition2D.y + worldOffset.y)));
-
+                    float height = shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x + worldOffset.x, 0f, vertPosition2D.y + worldOffset.y));
 
                     meshData.AddVertex(new Vector3(vertPosition2D.x, height, vertPosition2D.y), percent, vertexIndex);
 
@@ -92,8 +90,28 @@ public static class MeshGenerator
         }
 
         meshData.FinalizeMesh();
+        //FindSpaceForTrees(ref meshData);
 
         return meshData;
+    }
+
+    private static void FindSpaceForTrees(ref MeshData meshData)
+    {
+        var mesh = meshData.CreateMesh();
+        //find space for trees
+        var points = PDSampling.GeneratePoints(1.7f, new Vector2(mesh.bounds.size.x, mesh.bounds.size.z));
+        foreach (var point in points)
+        {
+            float pointElevation = shapeGen.GetScaledElevation(shapeGen.CalculateUnscaledElevation(new Vector3(point.x, 0f, point.y)));
+                    
+            if (pointElevation <= (0.7f * shapeGen.elevationMinMax.Max))
+            {
+                if (pointElevation >= (0.2f * shapeGen.elevationMinMax.Max))
+                {
+                    meshData.AddFoliageLocation(new Vector3(point.x, pointElevation, point.y));
+                }
+            }
+        }
     }
 }
 
@@ -111,6 +129,8 @@ public class MeshData
     int triangleIndex;
 
     bool useFlatShading;
+
+    List<Vector3> foliageLocations;
 
     public MeshData(int verticesPerLine, int skipIncrement, bool useFlatShade)
     {
@@ -131,6 +151,13 @@ public class MeshData
         outOfMeshTriangles = new int[24 * (verticesPerLine - 2)];
 
         useFlatShading = useFlatShade;
+
+        foliageLocations = new List<Vector3>();
+    }
+
+    public Vector3[] GetFoliagePoints()
+    {
+        return foliageLocations.ToArray();
     }
 
     public void AddVertex(Vector3 vertexPosition, Vector2 vertexUV, int vertexIndex)
@@ -169,6 +196,11 @@ public class MeshData
     void BakeNormals()
     {
         bakedNormals = CalculateNormals();
+    }
+
+    public void AddFoliageLocation(Vector3 location)
+    {
+        foliageLocations.Add(location);
     }
 
     Vector3[] CalculateNormals()

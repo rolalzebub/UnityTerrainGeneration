@@ -6,7 +6,6 @@ public class MapPreviewEditor : Editor
 {
     MapPreview preview;
     Editor meshSettingsEditor;
-    Editor heightSettingsEditor;
     Editor textureDataEditor;
     Editor shapeSettingsEditor;
 
@@ -30,7 +29,6 @@ public class MapPreviewEditor : Editor
             preview.DrawMapInEditor();
         }
 
-        DrawSettingsEditor(preview.heightMapSettings, preview.OnValuesUpdated, ref preview.heightSettingsFoldout, ref heightSettingsEditor);
         DrawSettingsEditor(preview.meshSettings, preview.OnValuesUpdated, ref preview.meshSettingsFoldout, ref meshSettingsEditor);
         DrawSettingsEditor(preview.textureData, preview.OnValuesUpdated, ref preview.textureDataFoldout, ref textureDataEditor);
         DrawSettingsEditor(preview.shapeSettings, preview.OnValuesUpdated, ref preview.shapeSettingsFoldout, ref shapeSettingsEditor);
