@@ -7,16 +7,16 @@ public class TerrainGeneratorEditor : Editor
     TerrainGenerator terrGen;
     Editor meshSettingsEditor;
     Editor textureSettingsEditor;
-    Editor shapeSettingsEditor;
+    Editor noiseSettingsEditor;
     MapPreview editorPreview;
 
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
+        DrawSettingsEditor(terrGen.heightSettings, editorPreview.OnValuesUpdated, ref terrGen.noiseSettingsFoldout, ref noiseSettingsEditor);
         DrawSettingsEditor(terrGen.meshSettings, editorPreview.OnValuesUpdated, ref terrGen.meshSettingsFoldout, ref meshSettingsEditor);
         DrawSettingsEditor(terrGen.textureSettings, editorPreview.OnValuesUpdated, ref terrGen.textureSettingsFoldout, ref textureSettingsEditor);
-        DrawSettingsEditor(terrGen.shapeSettings, editorPreview.OnValuesUpdated, ref terrGen.shapeSettingsFoldout, ref shapeSettingsEditor);
     }
 
     void DrawSettingsEditor(Object settings, System.Action updateCallback, ref bool foldOut, ref Editor editor)

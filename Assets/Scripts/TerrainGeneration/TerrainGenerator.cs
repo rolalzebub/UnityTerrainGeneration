@@ -7,7 +7,6 @@ public class TerrainGenerator : MonoBehaviour
 	const float viewerMoveThresholdForChunkUpdate = 25f;
 	const float sqrViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
 	
-
 	public int colliderLODIndex;
 
 	public LODInfo[] detailLevels;
@@ -27,28 +26,24 @@ public class TerrainGenerator : MonoBehaviour
 	public HeightMapSettings heightSettings;
 	public TextureData textureSettings;
 
-	public ShapeSettings shapeSettings;
-	ShapeGenerator shapeGen = new ShapeGenerator();
-
     [HideInInspector]
 	public bool meshSettingsFoldout;
     [HideInInspector]
-	public bool heightSettingsFoldout;
+	public bool noiseSettingsFoldout;
     [HideInInspector]
 	public bool textureSettingsFoldout;
-	[HideInInspector]
-	public bool shapeSettingsFoldout;
 
 	void Start()
 	{
 		textureSettings.ApplyToMaterial(mapMaterial);
-		textureSettings.UpdateMeshHeights(mapMaterial, heightSettings.minHeight, heightSettings.maxHeight);
-
-		MeshGenerator.UpdateShapeGenerator(shapeGen);
+		//textureSettings.UpdateMeshHeights(mapMaterial, heightSettings.minMaxValues.Min, heightSettings.minMaxValues.Max);
 
 		float maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
 		meshWorldSize = meshSettings.meshWorldSize;
 		chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshWorldSize);
+		
+		if(heightSettings.useFalloffMap)
+			FalloffGenerator.SetCurve(heightSettings.falloffMapCurve);
 
 		UpdateVisibleChunks();
 	}
@@ -89,7 +84,7 @@ public class TerrainGenerator : MonoBehaviour
 		{
 			for (int xOffset = -chunksVisibleInViewDst; xOffset <= chunksVisibleInViewDst; xOffset++)
 			{
-				Vector2 viewedChunkCoord = new Vector2(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
+				Vector2Int viewedChunkCoord = new Vector2Int(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
 
 				if (!alreadyUpdatedChunkCoords.Contains(viewedChunkCoord))
 				{
@@ -120,12 +115,6 @@ public class TerrainGenerator : MonoBehaviour
 			visibleTerrainChunks.Remove(chunk);
         }
     }
-
-    private void OnValidate()
-    {
-		shapeGen.UpdateSettings(shapeSettings);
-		MeshGenerator.UpdateShapeGenerator(shapeGen);
-	}
 }
 
 [System.Serializable]

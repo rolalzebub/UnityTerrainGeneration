@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38c0e284193f6074fb0bec22f6b5d02c, type: 3}
   m_Name: TerrainShape
   m_EditorClassIdentifier: 
-  planetRadius: 1
   noiseLayers:
   - enabled: 1
     useFirstLayerAsMask: 0
@@ -20,18 +19,39 @@ MonoBehaviour:
       filterType: 0
       simpleNoiseSettings:
         octaves: 4
-        strength: 20
         baseRoughness: 0.01
         roughness: 0
         persistence: 0.1
+        lacuranity: 2
         centre: {x: 0, y: 0, z: 0}
         minValue: 0
       ridgedNoiseSettings:
         octaves: 0
-        strength: 0
         baseRoughness: 0
         roughness: 0
         persistence: 0
+        lacuranity: 2
         centre: {x: 0, y: 0, z: 0}
         minValue: 0
         weightMultiplier: 0
+  - enabled: 1
+    useFirstLayerAsMask: 1
+    noiseSettings:
+      filterType: 1
+      simpleNoiseSettings:
+        octaves: 4
+        baseRoughness: 0.01
+        roughness: 0.63
+        persistence: 0.41
+        lacuranity: 2
+        centre: {x: 0, y: 0, z: 0}
+        minValue: 0
+      ridgedNoiseSettings:
+        octaves: 2
+        baseRoughness: 0.004
+        roughness: 0
+        persistence: 0.7
+        lacuranity: 2
+        centre: {x: 0, y: 0, z: 0}
+        minValue: 0.35
+        weightMultiplier: 0.37

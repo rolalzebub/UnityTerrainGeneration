@@ -7,7 +7,8 @@ public class MapPreviewEditor : Editor
     MapPreview preview;
     Editor meshSettingsEditor;
     Editor textureDataEditor;
-    Editor shapeSettingsEditor;
+    Editor noiseLayerSettings;
+    Editor heightSettingsEditor;
 
     private void OnEnable()
     {
@@ -31,7 +32,8 @@ public class MapPreviewEditor : Editor
 
         DrawSettingsEditor(preview.meshSettings, preview.OnValuesUpdated, ref preview.meshSettingsFoldout, ref meshSettingsEditor);
         DrawSettingsEditor(preview.textureData, preview.OnValuesUpdated, ref preview.textureDataFoldout, ref textureDataEditor);
-        DrawSettingsEditor(preview.shapeSettings, preview.OnValuesUpdated, ref preview.shapeSettingsFoldout, ref shapeSettingsEditor);
+        DrawSettingsEditor(preview.heightSettings, preview.OnValuesUpdated, ref preview.heightSettingsFoldout, ref heightSettingsEditor);
+        DrawSettingsEditor(preview.heightSettings.noiseLayerSettings, preview.OnValuesUpdated, ref preview.shapeSettingsFoldout, ref noiseLayerSettings);
     }
 
     void DrawSettingsEditor(Object settings, System.Action updateCallback, ref bool foldOut, ref Editor editor)

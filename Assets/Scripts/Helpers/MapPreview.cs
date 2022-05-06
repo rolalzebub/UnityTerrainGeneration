@@ -20,9 +20,6 @@ public class MapPreview : MonoBehaviour
     public MeshSettings meshSettings;
     public HeightMapSettings heightSettings;
     public TextureData textureData;
-    public ShapeSettings shapeSettings;
-
-    ShapeGenerator shapeGen = new ShapeGenerator();
 
     public Material terrainMaterial;
 
@@ -32,6 +29,8 @@ public class MapPreview : MonoBehaviour
     public bool textureDataFoldout;
     [HideInInspector]
     public bool shapeSettingsFoldout;
+    [HideInInspector]
+    public bool heightSettingsFoldout;
 
     public GameObject[] grassyObjectsToPlace;
     public float grassyObjectPlacementRadius = 3f;
@@ -41,7 +40,6 @@ public class MapPreview : MonoBehaviour
     public void DrawTexture(Texture2D texture)
     {
         textureRenderer.sharedMaterial.mainTexture = texture;
-        textureRenderer.transform.localScale = new Vector3(texture.width, 1, texture.height);
 
         textureRenderer.gameObject.SetActive(true);
         meshFilter.gameObject.SetActive(false);
@@ -49,12 +47,13 @@ public class MapPreview : MonoBehaviour
     
     public void DrawMesh(MeshData meshData)
     {
+        textureData.UpdateMeshHeights(terrainMaterial, meshData.heightMinMaxValues.Min, meshData.heightMinMaxValues.Max);
         meshFilter.sharedMesh = meshData.CreateMesh();
 
         textureRenderer.gameObject.SetActive(false);
         meshFilter.gameObject.SetActive(true);
 
-        FindSpaceForTrees();
+        //FindSpaceForTrees();
     }
 
     void ClearOldTrees()
@@ -86,15 +85,15 @@ public class MapPreview : MonoBehaviour
             {
                 if (checkInfo.collider.attachedRigidbody == null)
                 {
-                    float pointElevation = shapeGen.CalculateUnscaledElevation(new Vector3(checkInfo.point.x, checkInfo.point.y, checkInfo.point.z));
+                    //float pointElevation = shapeGen.CalculateUnscaledElevation(new Vector3(checkInfo.point.x, checkInfo.point.y, checkInfo.point.z));
 
-                    var toSpawn = FoliageFactory.GetFoliageForPoint(new FoliagePointProfile() { pointElevation = pointElevation, elevationMinMax = shapeGen.elevationMinMax });
-                    if (toSpawn != null)
-                    {
-                        var tree = Instantiate(toSpawn, checkInfo.point, Quaternion.identity, meshFilter.gameObject.transform);
-                        tree.transform.up = checkInfo.normal;
-                        placedTrees.Add(tree);
-                    }
+                    //var toSpawn = FoliageFactory.GetFoliageForPoint(new FoliagePointProfile() { pointElevation = pointElevation, elevationMinMax = shapeGen.elevationMinMax });
+                    //if (toSpawn != null)
+                    //{
+                    //    var tree = Instantiate(toSpawn, checkInfo.point, Quaternion.identity, meshFilter.gameObject.transform);
+                    //    tree.transform.up = checkInfo.normal;
+                    //    placedTrees.Add(tree);
+                    //}
                 }
             }
         }
@@ -102,23 +101,22 @@ public class MapPreview : MonoBehaviour
 
     public void DrawMapInEditor()
     {
-        shapeGen.UpdateSettings(shapeSettings);
         FoliageFactory.SetFoliageSettings(foliageSettings);
-        MeshGenerator.UpdateShapeGenerator(shapeGen);
         textureData.ApplyToMaterial(terrainMaterial);
-        textureData.UpdateMeshHeights(terrainMaterial, heightSettings.minHeight, heightSettings.maxHeight);
+        if(heightSettings.useFalloffMap)
+            FalloffGenerator.SetCurve(heightSettings.falloffMapCurve);
 
         if (drawMode == DrawMode.NoiseMap)
         {
-            DrawTexture(TextureGenerator.TextureFromShapeGenerator(new Vector2Int(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine), ref shapeGen));
+            DrawTexture(TextureGenerator.TextureFromHeightMap(HeightMapGenerator.GetHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightSettings, Vector2.zero)));
         }
         else if (drawMode == DrawMode.Mesh)
         {
-            DrawMesh(MeshGenerator.GenerateTerrainMesh(editorPreviewLOD, meshSettings, Vector2.zero));
+            DrawMesh(MeshGenerator.GenerateTerrainMesh(HeightMapGenerator.GetHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightSettings, Vector2.zero), editorPreviewLOD, meshSettings));
         }
         else if (drawMode == DrawMode.FalloffMap)
         {
-            DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.numVertsPerLine), 0, 1)));
+            DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.numVertsPerLine), 0, 1, 1f)));
         }
     }
 
@@ -141,10 +139,6 @@ public class MapPreview : MonoBehaviour
         {
             textureData.OnValuesUpdated -= OnTextureValuesUpdated;
             textureData.OnValuesUpdated += OnTextureValuesUpdated;
-        }
-        if (shapeSettings != null)
-        {
-            shapeGen.UpdateSettings(shapeSettings);
         }
     }
 

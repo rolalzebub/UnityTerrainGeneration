@@ -4,52 +4,39 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    public static ShapeGenerator shapeGen = null;
+    public static MeshData GenerateTerrainMesh(HeightMap heightMap, int levelOfDetail, MeshSettings settings)
+    {
 
-    public static void UpdateShapeGenerator(ShapeGenerator _shapeGen)
-    {
-        shapeGen = _shapeGen;
-    }
-    
-    public static MeshData GenerateTerrainMesh(int levelOfDetail, MeshSettings settings, Vector2 chunkCoord)
-    {
-        
         int skipIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
-
         int numVertsPerLine = settings.numVertsPerLine;
-
         Vector2 topLeft = new Vector2(-1, 1) * settings.meshWorldSize / 2f;
-        
-        MeshData meshData = new MeshData(numVertsPerLine, skipIncrement, settings.useFlatShading);
 
+        MeshData meshData = new MeshData(numVertsPerLine, skipIncrement, settings.useFlatShading);
         int[,] vertexIndicesMap = new int[numVertsPerLine, numVertsPerLine];
         int meshVertexIndex = 0;
         int outOfMeshVertexIndex = -1;
-
-        for (int y = 0; y < numVertsPerLine; y ++)
+        for (int y = 0; y < numVertsPerLine; y++)
         {
-            for (int x = 0; x < numVertsPerLine; x ++)
+            for (int x = 0; x < numVertsPerLine; x++)
             {
                 bool isOutOfMeshVertex = y == 0 || y == numVertsPerLine - 1 || x == 0 || x == numVertsPerLine - 1;
                 bool isSkippedVertex = (x > 2 && x < numVertsPerLine - 3 && y > 2 && y < numVertsPerLine - 3 &&
                                         (((x - 2) % skipIncrement != 0) || ((y - 2) % skipIncrement != 0)));
-                if(isOutOfMeshVertex)
+                if (isOutOfMeshVertex)
                 {
                     vertexIndicesMap[x, y] = outOfMeshVertexIndex;
                     outOfMeshVertexIndex--;
                 }
-                else if(!isSkippedVertex)
+                else if (!isSkippedVertex)
                 {
                     vertexIndicesMap[x, y] = meshVertexIndex;
                     meshVertexIndex++;
                 }
-
             }
         }
-
-        for (int y = 0; y < numVertsPerLine; y ++)
+        for (int y = 0; y < numVertsPerLine; y++)
         {
-            for (int x = 0; x < numVertsPerLine; x ++)
+            for (int x = 0; x < numVertsPerLine; x++)
             {
                 bool isOutOfMeshVertex = y == 0 || y == numVertsPerLine - 1 || x == 0 || x == numVertsPerLine - 1;
                 bool isSkippedVertex = (x > 2 && x < numVertsPerLine - 3 && y > 2 && y < numVertsPerLine - 3 &&
@@ -57,62 +44,63 @@ public static class MeshGenerator
                 bool isMeshEdgeVertex = (y == 1 || y == numVertsPerLine - 2 || x == 1 || x == numVertsPerLine - 2) && !isOutOfMeshVertex;
                 bool isMainVertex = ((x - 2) % skipIncrement == 0) && ((y - 2) % skipIncrement == 0) && !isOutOfMeshVertex && !isMeshEdgeVertex;
                 bool isEdgeCxnVertex = (y == 2 || y == numVertsPerLine - 3 || x == 2 || x == numVertsPerLine - 3) && !isOutOfMeshVertex && !isMeshEdgeVertex && !isMainVertex;
-
+                
                 if (!isSkippedVertex)
                 {
                     int vertexIndex = vertexIndicesMap[x, y];
-
                     Vector2 percent = new Vector2(x - 1, y - 1) / (numVertsPerLine - 3);
                     Vector2 vertPosition2D = topLeft + new Vector2(percent.x, -percent.y) * settings.meshWorldSize;
+                    float height = heightMap.values[x, y] * heightMap.heightMultiplier;
 
-                    Vector2 worldOffset = chunkCoord * settings.meshWorldSize;
-
-                    float height = shapeGen.CalculateUnscaledElevation(new Vector3(vertPosition2D.x + worldOffset.x, 0f, vertPosition2D.y + worldOffset.y));
-
+                    if (isEdgeCxnVertex)
+                    {
+                        bool isVertical = (x == 2) || (x == numVertsPerLine - 3);
+                        int dstToMainVertA = (isVertical ? y - 2 : x - 2) % skipIncrement;
+                        int dstToMainVertB = skipIncrement - dstToMainVertA;
+                        float heightMainVertA = heightMap.values[isVertical ? x : x - dstToMainVertA, isVertical ? y - dstToMainVertA : y] * heightMap.heightMultiplier;
+                        float heightMainVertB = heightMap.values[isVertical ? x : x + dstToMainVertB, isVertical ? y + dstToMainVertB : y] * heightMap.heightMultiplier;
+                        float dstPercentAToB = dstToMainVertA / (float)skipIncrement;
+                        height = heightMainVertA * (1 - dstPercentAToB) + heightMainVertB * dstPercentAToB;
+                    }
                     meshData.AddVertex(new Vector3(vertPosition2D.x, height, vertPosition2D.y), percent, vertexIndex);
+                    meshData.heightMinMaxValues.AddValue(height);
 
                     bool createTriangle = x < numVertsPerLine - 1 && y < numVertsPerLine - 1 && (!isEdgeCxnVertex || (x != 2 && y != 2));
-
                     if (createTriangle)
                     {
                         int currentIncrement = (isMainVertex && x != numVertsPerLine - 3 && y != numVertsPerLine - 3) ? skipIncrement : 1;
-
                         int a = vertexIndicesMap[x, y];
                         int b = vertexIndicesMap[x + currentIncrement, y];
                         int c = vertexIndicesMap[x, y + currentIncrement];
                         int d = vertexIndicesMap[x + currentIncrement, y + currentIncrement];
-
                         meshData.AddTriangle(a, d, c);
                         meshData.AddTriangle(d, a, b);
                     }
                 }
             }
         }
-
         meshData.FinalizeMesh();
-        //FindSpaceForTrees(ref meshData);
-
         return meshData;
     }
 
-    private static void FindSpaceForTrees(ref MeshData meshData)
-    {
-        var mesh = meshData.CreateMesh();
-        //find space for trees
-        var points = PDSampling.GeneratePoints(1.7f, new Vector2(mesh.bounds.size.x, mesh.bounds.size.z));
-        foreach (var point in points)
-        {
-            float pointElevation = shapeGen.GetScaledElevation(shapeGen.CalculateUnscaledElevation(new Vector3(point.x, 0f, point.y)));
-                    
-            if (pointElevation <= (0.7f * shapeGen.elevationMinMax.Max))
-            {
-                if (pointElevation >= (0.2f * shapeGen.elevationMinMax.Max))
-                {
-                    meshData.AddFoliageLocation(new Vector3(point.x, pointElevation, point.y));
-                }
-            }
-        }
-    }
+    //private static void FindSpaceForTrees(ref MeshData meshData)
+    //{
+    //    var mesh = meshData.CreateMesh();
+    //    //find space for trees
+    //    var points = PDSampling.GeneratePoints(1.7f, new Vector2(mesh.bounds.size.x, mesh.bounds.size.z));
+    //    foreach (var point in points)
+    //    {
+    //        float pointElevation = shapeGen.GetScaledElevation(shapeGen.CalculateUnscaledElevation(new Vector3(point.x, 0f, point.y)));
+
+    //        if (pointElevation <= (0.7f * shapeGen.elevationMinMax.Max))
+    //        {
+    //            if (pointElevation >= (0.2f * shapeGen.elevationMinMax.Max))
+    //            {
+    //                meshData.AddFoliageLocation(new Vector3(point.x, pointElevation, point.y));
+    //            }
+    //        }
+    //    }
+    //}
 }
 
 public class MeshData
@@ -131,6 +119,8 @@ public class MeshData
     bool useFlatShading;
 
     List<Vector3> foliageLocations;
+
+    public MinMax heightMinMaxValues = new MinMax();
 
     public MeshData(int verticesPerLine, int skipIncrement, bool useFlatShade)
     {

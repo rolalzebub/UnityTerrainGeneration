@@ -31,9 +31,11 @@ public static class FalloffGenerator
 
     static float Evaluate(float value)
     {
-        if(falloffCurve != null)
+        AnimationCurve threadSafeCurve = falloffCurve;
+
+        if (falloffCurve != null)
         {
-            return falloffCurve.Evaluate(value);
+            return threadSafeCurve.Evaluate(value);
         }
 
         //default method

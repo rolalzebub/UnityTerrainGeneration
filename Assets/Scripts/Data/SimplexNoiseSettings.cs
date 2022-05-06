@@ -23,10 +23,10 @@ public class SimplexNoiseSettings
         /// </summary>
         [Range(1, 8)]
         public int octaves;
-        public float strength = 1f;
         public float baseRoughness = 1f;
         public float roughness = 2f;
         public float persistence = .5f;
+        public float lacuranity = 2f;
         public Vector3 centre;
         public float minValue;
     }

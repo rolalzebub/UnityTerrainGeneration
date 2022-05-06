@@ -13,15 +13,8 @@ MonoBehaviour:
   m_Name: DefaultNoise
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  noiseSettings:
-    normalizeMode: 1
-    scale: 60
-    octaves: 6
-    persistence: 0.35
-    lacunarity: 2
-    seed: 177
-    offset: {x: 0, y: 0}
-  heightMultiplier: 60
+  noiseLayerSettings: {fileID: 11400000, guid: 58bbfd42861f6764aa746906530b2596, type: 2}
+  heightMultiplier: 25
   heightCurve:
     serializedVersion: 2
     m_Curve:

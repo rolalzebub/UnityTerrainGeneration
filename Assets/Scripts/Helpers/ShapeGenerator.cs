@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ShapeGenerator
 {
-    ShapeSettings settings;
+    NoiseLayerSettings settings;
     INoiseFilter[] noiseFilters;
     public MinMax elevationMinMax;
 
-    public void UpdateSettings(ShapeSettings _settings)
+    public void UpdateSettings(NoiseLayerSettings _settings)
     {
         settings = _settings;
         noiseFilters = new INoiseFilter[settings.noiseLayers.Length];
@@ -20,7 +20,7 @@ public class ShapeGenerator
         elevationMinMax = new MinMax();
     }
 
-    public ShapeSettings GetCurrentSettings()
+    public NoiseLayerSettings GetCurrentSettings()
     {
         return settings;
     }
@@ -60,5 +60,47 @@ public class ShapeGenerator
         float elevation = Mathf.Max(0, unscaledElevation);
         elevation = (1 + elevation);
         return elevation;
+    }
+
+    public float[,] CreateNoiseMap(int mapWidth, int mapHeight, NoiseLayerSettings settings, Vector2 sampleCentre)
+    {
+        float[,] toReturn = new float[mapWidth, mapHeight];
+
+        for (int i = 0; i < mapWidth; i++)
+        {
+            for (int j = 0; j < mapHeight; j++)
+            {
+                float firstLayerValue = 0;
+                float elevation = 0;
+
+                Vector3 currentCoordinate = new Vector3(sampleCentre.x, 0f, sampleCentre.y);
+                currentCoordinate.x -= mapWidth / 2;
+                currentCoordinate.x += i;
+                currentCoordinate.z -= mapHeight / 2;
+                currentCoordinate.z += j;
+
+                if (noiseFilters.Length > 0)
+                {
+                    firstLayerValue = noiseFilters[0].Evaluate(currentCoordinate);
+                    if (settings.noiseLayers[0].enabled)
+                    {
+                        elevation = firstLayerValue;
+                    }
+                }
+
+                for (int k = 1; k < noiseFilters.Length; k++)
+                {
+                    if (settings.noiseLayers[k].enabled)
+                    {
+                        float mask = (settings.noiseLayers[k].useFirstLayerAsMask ? firstLayerValue : 1);
+                        elevation += noiseFilters[k].Evaluate(currentCoordinate) * mask;
+                    }
+                }
+
+                toReturn[i,j] = elevation;
+            }
+        }
+
+        return toReturn;
     }
 }

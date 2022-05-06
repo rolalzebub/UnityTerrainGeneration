@@ -32,6 +32,6 @@ public class RidgedNoiseFilter : INoiseFilter
         }
 
         noiseValue = noiseValue - settings.minValue;
-        return noiseValue * settings.strength;
+        return noiseValue;
     }
 }
