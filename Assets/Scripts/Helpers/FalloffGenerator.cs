@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class FalloffGenerator
+public class FalloffGenerator
 {
     static bool isCached = false;
     static int cachedSize = 0;
