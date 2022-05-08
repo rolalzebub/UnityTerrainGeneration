@@ -49,7 +49,7 @@ public class HeightMapGenerator
 
                 if(settings.useFalloffMap)
                 {
-                    elevation *= 1 - falloffMapData[i, j];
+                    elevation *= falloffMapData[i, j];
                 }    
 
 

@@ -19,9 +19,9 @@ MonoBehaviour:
       filterType: 0
       simpleNoiseSettings:
         octaves: 4
-        baseRoughness: 0.01
-        roughness: 0
-        persistence: 0.1
+        baseRoughness: 0.014
+        roughness: 1.56
+        persistence: 0.5
         lacuranity: 2
         centre: {x: 0, y: 0, z: 0}
         minValue: 0
@@ -37,15 +37,15 @@ MonoBehaviour:
   - enabled: 1
     useFirstLayerAsMask: 1
     noiseSettings:
-      filterType: 1
+      filterType: 0
       simpleNoiseSettings:
         octaves: 4
         baseRoughness: 0.01
-        roughness: 0.63
-        persistence: 0.41
+        roughness: 0.48
+        persistence: 0.19
         lacuranity: 2
         centre: {x: 0, y: 0, z: 0}
-        minValue: 0
+        minValue: 0.86
       ridgedNoiseSettings:
         octaves: 2
         baseRoughness: 0.004
@@ -55,3 +55,24 @@ MonoBehaviour:
         centre: {x: 0, y: 0, z: 0}
         minValue: 0.35
         weightMultiplier: 0.37
+  - enabled: 1
+    useFirstLayerAsMask: 1
+    noiseSettings:
+      filterType: 1
+      simpleNoiseSettings:
+        octaves: 4
+        baseRoughness: 0.01
+        roughness: 0.48
+        persistence: 0.19
+        lacuranity: 2
+        centre: {x: 0, y: 0, z: 0}
+        minValue: 0.86
+      ridgedNoiseSettings:
+        octaves: 3
+        baseRoughness: 0.004
+        roughness: 0.24
+        persistence: 0.68
+        lacuranity: 2
+        centre: {x: 0, y: 0, z: 0}
+        minValue: 0.08
+        weightMultiplier: 1
