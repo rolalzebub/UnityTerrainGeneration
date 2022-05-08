@@ -17,8 +17,6 @@ public static class FoliageFactory
 
         for (int i = 0; i < currentFoliageSettings.elevationLevels.Length - 1; i++)
         {
-            //var ScaledElevation = pointProfile.pointElevation * pointProfile.elevationMinMax.Max;
-
             if (pointProfile.pointElevation >= currentFoliageSettings.elevationLevels[i] && pointProfile.pointElevation <= currentFoliageSettings.elevationLevels[i+1])
             {
                 int objectCheckRange = currentFoliageSettings.elevationLevelObjectIndices[i + 1] - currentFoliageSettings.elevationLevelObjectIndices[i];

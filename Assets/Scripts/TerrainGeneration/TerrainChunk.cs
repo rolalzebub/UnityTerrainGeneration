@@ -98,43 +98,43 @@ public class TerrainChunk
             OnHeightMapReceived);
     }
 
-	//public void PlaceFoliage()
- //   {
-	//	var points = lodMeshes[0].GetFoliagePoints();
-	//	//raycast downwards from point till you hit a triangle
+    public void PlaceFoliage()
+    {
+        var points = lodMeshes[0].GetFoliagePoints();
+        //raycast downwards from point till you hit a triangle
 
-	//	foreach (var point in points)
-	//	{
+        foreach (var point in points)
+        {
 
-	//		Ray pointCheck = new Ray(new Vector3(meshFilter.sharedMesh.bounds.min.x + point.x, 100, meshFilter.sharedMesh.bounds.min.z + point.y), Vector3.down);
-	//		RaycastHit checkInfo;
-	//		bool checkResult = Physics.Raycast(pointCheck, out checkInfo, 120f);
+            Ray pointCheck = new Ray(new Vector3(meshFilter.sharedMesh.bounds.min.x + point.x, 100, meshFilter.sharedMesh.bounds.min.z + point.y), Vector3.down);
+            RaycastHit checkInfo;
+            bool checkResult = Physics.Raycast(pointCheck, out checkInfo, 120f);
 
-	//		if (checkResult)
-	//		{
-	//			if (checkInfo.collider.attachedRigidbody == null)
-	//			{
-	//				float pointElevation = MeshGenerator.shapeGen.CalculateUnscaledElevation(new Vector3(checkInfo.point.x, checkInfo.point.y, checkInfo.point.z));
+            if (checkResult)
+            {
+                if (checkInfo.collider.attachedRigidbody == null)
+                {
+					float pointElevation = heightMap.values[Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.y)];
 
-	//				var toSpawn = FoliageFactory.GetFoliageForPoint(new FoliagePointProfile() { pointElevation = pointElevation, elevationMinMax = MeshGenerator.shapeGen.elevationMinMax });
-	//				if (toSpawn != null)
-	//				{
-						
-	//					//GameObject tree = (GameObject)Dispatcher.CurrentDispatcher.Invoke(new Func<GameObject, Vector3, Quaternion, Transform, GameObject>(
-	//					//	(GameObject g, Vector3 v, Quaternion q, Transform t) =>
-	//					//	{
-	//					//		return GameObject.Instantiate(g, v, q, t);
-	//					//	}), new object[] { toSpawn, checkInfo.point, Quaternion.identity, meshFilter.gameObject.transform });
-	//					// //GameObject.Instantiate(toSpawn, checkInfo.point, Quaternion.identity, meshFilter.gameObject.transform);
-	//					//tree.transform.up = checkInfo.normal;
-	//					//foliage.Add(tree);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+                    var toSpawn = FoliageFactory.GetFoliageForPoint(new FoliagePointProfile() { pointElevation = pointElevation, elevationMinMax = heightMap.minMaxValues });
+                    if (toSpawn != null)
+                    {
 
-	public void UpdateTerrainChunk()
+                        //GameObject tree = (GameObject)Dispatcher.CurrentDispatcher.Invoke(new Func<GameObject, Vector3, Quaternion, Transform, GameObject>(
+                        //    (GameObject g, Vector3 v, Quaternion q, Transform t) =>
+                        //    {
+                        //        return GameObject.Instantiate(g, v, q, t);
+                        //    }), new object[] { toSpawn, checkInfo.point, Quaternion.identity, meshFilter.gameObject.transform });
+                        GameObject tree = GameObject.Instantiate(toSpawn, checkInfo.point, Quaternion.identity, meshFilter.gameObject.transform);
+                        tree.transform.up = checkInfo.normal;
+                        foliage.Add(tree);
+                    }
+                }
+            }
+        }
+    }
+
+    public void UpdateTerrainChunk()
 	{
 		if (heightMapReceived)
 		{
@@ -142,13 +142,13 @@ public class TerrainChunk
 			bool wasVisible = IsVisible();
 			bool visible = viewerDstFromNearestEdge <= maxViewDistance;
 
-			//if (!hasPlacedTrees && lodMeshes[0].hasMesh)
-			//{
-			//	PlaceFoliage();
-			//	hasPlacedTrees = true;
-			//}
+            if (!hasPlacedTrees && lodMeshes[0].hasMesh)
+            {
+                PlaceFoliage();
+                hasPlacedTrees = true;
+            }
 
-			if (visible)
+            if (visible)
 			{
 				int lodIndex = 0;
 
